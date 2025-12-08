@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mgram 결과 - Framee</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --cyan: #00ffff;
+            --pink: #ff6cdc;
+            --bg-cream: #f5f1e8;
+            --text-dark: #2a2a2a;
+            --text-gray: #666666;
+            --border-light: #e0ddd5;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(245, 241, 232, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        .logo-text .serif {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 700;
+        }
+        
+        .logo-text .sans {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+        }
+        
+        .back-btn {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 2px solid var(--border-light);
+            border-radius: 50px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .back-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 5% 100px;
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-title {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 900;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+        }
+        
+        .result-subtitle {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--text-gray);
+        }
+        
+        /* Your Tags */
+        .your-tags {
+            background: #f9f5ed;
+            padding: 2.5rem;
+            border-radius: 30px;
+            border: 2px solid var(--border-light);
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+        
+        .section-title {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .tags-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .result-tag {
+            padding: 0.8rem 1.8rem;
+            background: var(--cyan);
+            color: white;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            animation: scaleIn 0.5s ease-out backwards;
+        }
+        
+        .result-tag:nth-child(1) { animation-delay: 0.3s; }
+        .result-tag:nth-child(2) { animation-delay: 0.4s; }
+        .result-tag:nth-child(3) { animation-delay: 0.5s; }
+        .result-tag:nth-child(4) { animation-delay: 0.6s; }
+        .result-tag:nth-child(5) { animation-delay: 0.7s; }
+        .result-tag:nth-child(6) { animation-delay: 0.8s; }
+        .result-tag:nth-child(7) { animation-delay: 0.9s; }
+        .result-tag:nth-child(8) { animation-delay: 1s; }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Analysis */
+        .analysis {
+            background: #f9f5ed;
+            padding: 2.5rem;
+            border-radius: 30px;
+            border: 2px solid var(--border-light);
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+        
+        .analysis-content {
+            line-height: 2;
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            color: var(--text-dark);
+        }
+        
+        .highlight {
+            color: var(--pink);
+            font-weight: 700;
+        }
+        
+        /* Recommendations */
+        .recommendations {
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+        
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .rec-card {
+            background: #f9f5ed;
+            padding: 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--border-light);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .rec-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--pink);
+            box-shadow: 0 10px 30px rgba(255, 108, 220, 0.1);
+        }
+        
+        .rec-image {
+            width: 100%;
+            height: 150px;
+            background: #e8e4da;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .rec-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .rec-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--pink);
+        }
+        
+        .rec-desc {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+        
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 3rem 0;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+        
+        .cta-btn {
+            padding: 1.2rem 3rem;
+            background: transparent;
+            border: 2px solid var(--cyan);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+        
+        .cta-btn:hover {
+            background: var(--cyan);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .cta-btn.secondary {
+            border-color: var(--border-light);
+        }
+        
+        .cta-btn.secondary:hover {
+            border-color: var(--pink);
+            background: transparent;
+            color: var(--pink);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 5%;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .back-btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.85rem;
+            }
+            
+            .container {
+                padding: 100px 5% 80px;
+            }
+            
+            .your-tags, .analysis {
+                padding: 1.5rem;
+            }
+            
+            .tags-display {
+                gap: 0.8rem;
+            }
+            
+            .result-tag {
+                padding: 0.6rem 1.4rem;
+                font-size: 0.9rem;
+            }
+            
+            .rec-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-btn {
+                display: block;
+                margin: 0.8rem auto;
+                padding: 1rem 2.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <img src="images/logo.png" alt="Framee Logo" class="logo-img">
+            <span class="logo-text"><span class="serif">Fra</span><span class="sans">mee</span></span>
+        </a>
+        <a href="index.html" class="back-btn">← 홈으로</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="result-header">
+            <div class="result-title">당신의 mgram</div>
+            <p class="result-subtitle">8가지 키워드로 정의된 당신</p>
+        </div>
+
+        <!-- Your Tags -->
+        <div class="your-tags">
+            <div class="section-title">당신을 표현하는 8개의 해시태그</div>
+            <div class="tags-display" id="tags-container">
+                <!-- JavaScript로 생성 -->
+            </div>
+        </div>
+
+        <!-- Analysis -->
+        <div class="analysis">
+            <div class="section-title">당신의 성향 분석</div>
+            <div class="analysis-content" id="analysis-text">
+                <!-- JavaScript로 생성 -->
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="recommendations">
+            <div class="section-title">추천 서비스</div>
+            <div class="rec-grid">
+                <div class="rec-card">
+                    <div class="rec-image">
+                        <img src="images/inner-care.jpg" alt="Inner Care">
+                    </div>
+                    <div class="rec-title">Inner Care</div>
+                    <div class="rec-desc">
+                        당신의 내면을 더 깊이 이해하고<br>
+                        자존감을 회복하는 심리상담
+                    </div>
+                </div>
+                <div class="rec-card">
+                    <div class="rec-image">
+                        <img src="images/outer-care.jpg" alt="Outer Care">
+                    </div>
+                    <div class="rec-title">Outer Care</div>
+                    <div class="rec-desc">
+                        당신만의 매력을 찾아<br>
+                        외적 자신감을 높이는 스타일링
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <a href="index.html#service" class="cta-btn">서비스 시작하기</a>
+            <a href="mgram.html" class="cta-btn secondary">다시 테스트하기</a>
+        </div>
+    </div>
+
+    <script>
+        // URL에서 선택된 태그 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const tagsParam = urlParams.get('tags');
+        
+        if (tagsParam) {
+            const selectedTags = tagsParam.split(',');
+            const container = document.getElementById('tags-container');
+            
+            // 태그 표시
+            selectedTags.forEach(tag => {
+                const div = document.createElement('div');
+                div.className = 'result-tag';
+                div.textContent = `#${tag}`;
+                container.appendChild(div);
+            });
+            
+            // 분석 텍스트 생성
+            const analysisText = document.getElementById('analysis-text');
+            const hasCreative = selectedTags.some(t => ['창의적', '독창적', '자유로운'].includes(t));
+            const hasLogical = selectedTags.some(t => ['분석적', '논리적', '체계적'].includes(t));
+            const hasSocial = selectedTags.some(t => ['사교적', '공감적', '배려심 깊은'].includes(t));
+            
+            let analysis = `당신은 <span class="highlight">${selectedTags.slice(0, 3).join(', ')}</span> 성향이 강한 사람입니다. `;
+            
+            if (hasCreative && hasLogical) {
+                analysis += `창의성과 논리성을 동시에 갖춘 당신은 <span class="highlight">혁신적인 문제 해결</span>에 강점이 있습니다. `;
+            } else if (hasCreative) {
+                analysis += `풍부한 상상력과 새로운 시도를 즐기는 당신은 <span class="highlight">예술적 감각</span>이 뛰어납니다. `;
+            } else if (hasLogical) {
+                analysis += `체계적이고 분석적인 당신은 <span class="highlight">계획적인 실행</span>에 능숙합니다. `;
+            }
+            
+            if (hasSocial) {
+                analysis += `타인과의 관계에서 깊은 공감과 이해를 보이며, <span class="highlight">조화로운 관계</span>를 중요하게 여깁니다.`;
+            } else {
+                analysis += `독립적으로 사고하고 행동하며, <span class="highlight">자기만의 길</span>을 개척해 나갑니다.`;
+            }
+            
+            analysisText.innerHTML = analysis;
+        } else {
+            // 태그가 없으면 테스트 페이지로 리다이렉트
+            window.location.href = 'mgram.html';
+        }
+    </script>
+</body>
+</html>

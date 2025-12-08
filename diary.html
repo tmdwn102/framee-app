@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 기록 - Framee</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --cyan: #00ffff;
+            --pink: #ff6cdc;
+            --bg-cream: #f5f1e8;
+            --text-dark: #2a2a2a;
+            --text-gray: #666666;
+            --border-light: #e0ddd5;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(245, 241, 232, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        .logo-text .serif {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 700;
+        }
+        
+        .logo-text .sans {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--cyan);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-dark);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px 5% 100px;
+        }
+        
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-title {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 900;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+        
+        .today-date {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+        }
+        
+        /* Write Section */
+        .write-section {
+            background: #f9f5ed;
+            border: 2px solid var(--border-light);
+            border-radius: 30px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .emotion-selector {
+            margin-bottom: 2rem;
+        }
+        
+        .emotion-label {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .emotion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 1rem;
+        }
+        
+        .emotion-item {
+            aspect-ratio: 1;
+            background: white;
+            border: 3px solid var(--border-light);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 0.5rem;
+        }
+        
+        .emotion-item:hover {
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+        }
+        
+        .emotion-item.selected {
+            border-color: var(--pink);
+            background: rgba(255, 108, 220, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .emotion-icon {
+            font-size: 2rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .emotion-name {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 15px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: white;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--cyan);
+        }
+        
+        textarea.input-field {
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--cyan);
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        .btn-primary {
+            background: var(--cyan);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-dark);
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+        }
+        
+        /* Records Section */
+        .records-section {
+            margin-top: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+        }
+        
+        .records-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .record-card {
+            background: #f9f5ed;
+            border: 2px solid var(--border-light);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+        
+        .record-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .record-date-emotion {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .record-emotion {
+            font-size: 1.5rem;
+        }
+        
+        .record-date {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+        }
+        
+        .record-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-icon {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+        
+        .btn-icon:hover {
+            border-color: var(--pink);
+            color: var(--pink);
+        }
+        
+        .record-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--text-dark);
+        }
+        
+        .record-content {
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-gray);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--cyan);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(150%);
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 5%;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(245, 241, 232, 0.98);
+                flex-direction: column;
+                padding: 2rem 5%;
+                gap: 1.5rem;
+                border-bottom: 1px solid var(--border-light);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .container {
+                padding: 100px 5% 80px;
+            }
+            
+            .write-section {
+                padding: 1.5rem;
+            }
+            
+            .emotion-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .record-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .toast {
+                left: 1rem;
+                right: 1rem;
+                bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <img src="images/logo.png" alt="Framee Logo" class="logo-img">
+            <span class="logo-text"><span class="serif">Fra</span><span class="sans">mee</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">홈</a>
+            <a href="mgram.html">mgram</a>
+            <a href="diary.html">나의 기록</a>
+            <a href="journey.html">여정</a>
+            <a href="community.html">커뮤니티</a>
+        </div>
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">나의 기록</h1>
+            <p class="today-date" id="today-date"></p>
+        </div>
+
+        <!-- Write Section -->
+        <div class="write-section">
+            <div class="emotion-selector">
+                <label class="emotion-label">오늘의 감정</label>
+                <div class="emotion-grid">
+                    <div class="emotion-item" data-emotion="happy">
+                        <div class="emotion-icon">😊</div>
+                        <div class="emotion-name">행복해요</div>
+                    </div>
+                    <div class="emotion-item" data-emotion="excited">
+                        <div class="emotion-icon">🤗</div>
+                        <div class="emotion-name">설레요</div>
+                    </div>
+                    <div class="emotion-item" data-emotion="calm">
+                        <div class="emotion-icon">😌</div>
+                        <div class="emotion-name">평온해요</div>
+                    </div>
+                    <div class="emotion-item" data-emotion="tired">
+                        <div class="emotion-icon">😴</div>
+                        <div class="emotion-name">피곤해요</div>
+                    </div>
+                    <div class="emotion-item" data-emotion="sad">
+                        <div class="emotion-icon">😢</div>
+                        <div class="emotion-name">슬퍼요</div>
+                    </div>
+                    <div class="emotion-item" data-emotion="anxious">
+                        <div class="emotion-icon">😰</div>
+                        <div class="emotion-name">불안해요</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">제목</label>
+                <input type="text" class="input-field" id="record-title" placeholder="오늘 하루를 한 문장으로 표현해보세요">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">내용</label>
+                <textarea class="input-field" id="record-content" placeholder="오늘 있었던 일, 느낀 감정, 생각들을 자유롭게 적어보세요..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="clearForm()">취소</button>
+                <button class="btn btn-primary" onclick="saveRecord()">저장하기</button>
+            </div>
+        </div>
+
+        <!-- Records List -->
+        <div class="records-section">
+            <h2 class="section-title">이전 기록</h2>
+            <div class="records-list" id="records-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📝</div>
+                    <p>아직 작성한 기록이 없습니다.<br>오늘의 감정과 생각을 기록해보세요.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let selectedEmotion = null;
+        let editingRecordId = null;
+        
+        // 날짜 표시
+        function updateDate() {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('today-date').textContent = today.toLocaleDateString('ko-KR', options);
+        }
+        
+        // 감정 선택
+        document.querySelectorAll('.emotion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.emotion-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedEmotion = {
+                    type: item.dataset.emotion,
+                    icon: item.querySelector('.emotion-icon').textContent,
+                    name: item.querySelector('.emotion-name').textContent
+                };
+            });
+        });
+        
+        // 기록 저장
+        function saveRecord() {
+            const title = document.getElementById('record-title').value.trim();
+            const content = document.getElementById('record-content').value.trim();
+            
+            if (!title) {
+                showToast('제목을 입력해주세요');
+                return;
+            }
+            
+            if (!content) {
+                showToast('내용을 입력해주세요');
+                return;
+            }
+            
+            if (!selectedEmotion) {
+                showToast('오늘의 감정을 선택해주세요');
+                return;
+            }
+            
+            const record = {
+                id: editingRecordId || Date.now().toString(),
+                title,
+                content,
+                emotion: selectedEmotion,
+                date: new Date().toISOString(),
+                updated: new Date().toISOString()
+            };
+            
+            try {
+                localStorage.setItem(`record:${record.id}`, JSON.stringify(record));
+                showToast(editingRecordId ? '기록이 수정되었습니다' : '기록이 저장되었습니다');
+                clearForm();
+                loadRecords();
+            } catch (error) {
+                showToast('저장에 실패했습니다');
+                console.error('Save error:', error);
+            }
+        }
+        
+        // 기록 불러오기
+        function loadRecords() {
+            try {
+                const records = [];
+                
+                // localStorage에서 'record:'로 시작하는 모든 키 찾기
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('record:')) {
+                        try {
+                            const data = localStorage.getItem(key);
+                            if (data) {
+                                records.push(JSON.parse(data));
+                            }
+                        } catch (e) {
+                            console.error('Error loading record:', e);
+                        }
+                    }
+                }
+                
+                if (records.length === 0) {
+                    document.getElementById('records-list').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📝</div>
+                            <p>아직 작성한 기록이 없습니다.<br>오늘의 감정과 생각을 기록해보세요.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                records.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                const html = records.map(record => {
+                    const date = new Date(record.date);
+                    const dateStr = date.toLocaleDateString('ko-KR', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    
+                    return `
+                        <div class="record-card">
+                            <div class="record-header">
+                                <div class="record-date-emotion">
+                                    <span class="record-emotion">${record.emotion.icon}</span>
+                                    <span class="record-date">${dateStr}</span>
+                                </div>
+                                <div class="record-actions">
+                                    <button class="btn-icon" onclick="editRecord('${record.id}')">수정</button>
+                                    <button class="btn-icon" onclick="deleteRecord('${record.id}')">삭제</button>
+                                </div>
+                            </div>
+                            <h3 class="record-title">${escapeHtml(record.title)}</h3>
+                            <p class="record-content">${escapeHtml(record.content)}</p>
+                        </div>
+                    `;
+                }).join('');
+                
+                document.getElementById('records-list').innerHTML = html;
+            } catch (error) {
+                console.error('Load error:', error);
+                document.getElementById('records-list').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>기록을 불러올 수 없습니다.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 기록 수정
+        function editRecord(id) {
+            try {
+                const data = localStorage.getItem(`record:${id}`);
+                if (!data) return;
+                
+                const record = JSON.parse(data);
+                
+                document.getElementById('record-title').value = record.title;
+                document.getElementById('record-content').value = record.content;
+                
+                document.querySelectorAll('.emotion-item').forEach(item => {
+                    item.classList.remove('selected');
+                    if (item.dataset.emotion === record.emotion.type) {
+                        item.classList.add('selected');
+                    }
+                });
+                
+                selectedEmotion = record.emotion;
+                editingRecordId = id;
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                console.error('Edit error:', error);
+            }
+        }
+        
+        // 기록 삭제
+        function deleteRecord(id) {
+            if (!confirm('이 기록을 삭제하시겠습니까?')) return;
+            
+            try {
+                localStorage.removeItem(`record:${id}`);
+                showToast('기록이 삭제되었습니다');
+                loadRecords();
+            } catch (error) {
+                showToast('삭제에 실패했습니다');
+                console.error('Delete error:', error);
+            }
+        }
+        
+        // 폼 초기화
+        function clearForm() {
+            document.getElementById('record-title').value = '';
+            document.getElementById('record-content').value = '';
+            document.querySelectorAll('.emotion-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            selectedEmotion = null;
+            editingRecordId = null;
+        }
+        
+        // Toast 알림
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // HTML 이스케이프
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 모바일 메뉴
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+        
+        // 초기화
+        updateDate();
+        loadRecords();
+    </script>
+</body>
+</html>

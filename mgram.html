@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mgram - Framee 성격 테스트</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --cyan: #00ffff;
+            --pink: #ff6cdc;
+            --bg-cream: #f5f1e8;
+            --text-dark: #2a2a2a;
+            --text-gray: #666666;
+            --border-light: #e0ddd5;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(245, 241, 232, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        .logo-text .serif {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 700;
+        }
+        
+        .logo-text .sans {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+        }
+        
+        .back-btn {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 2px solid var(--border-light);
+            border-radius: 50px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .back-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px 5% 100px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .mgram-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+        
+        .instruction {
+            background: #f9f5ed;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            text-align: center;
+            border: 2px solid var(--border-light);
+        }
+        
+        .counter {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 700;
+            color: var(--pink);
+            margin-bottom: 0.5rem;
+        }
+        
+        .counter-text {
+            color: var(--text-gray);
+        }
+        
+        /* Hashtags Grid */
+        .hashtags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        
+        .hashtag-item {
+            padding: 1.2rem;
+            background: #f9f5ed;
+            border: 2px solid var(--border-light);
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .hashtag-item:hover {
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+        }
+        
+        .hashtag-item.selected {
+            background: var(--cyan);
+            border-color: var(--cyan);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .hashtag-item.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .hashtag-item.disabled:hover {
+            transform: none;
+        }
+        
+        .hashtag-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hashtag-desc {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .hashtag-item.selected .hashtag-desc {
+            opacity: 1;
+        }
+        
+        /* Submit Button */
+        .submit-section {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .submit-btn {
+            padding: 1.2rem 4rem;
+            background: transparent;
+            border: 2px solid var(--border-light);
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: not-allowed;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn.active {
+            background: var(--pink);
+            border-color: var(--pink);
+            color: white;
+            cursor: pointer;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .submit-btn.active:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 108, 220, 0.3);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 5%;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .back-btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.85rem;
+            }
+            
+            .container {
+                padding: 100px 5% 80px;
+            }
+            
+            .header {
+                margin-bottom: 2rem;
+            }
+            
+            .instruction {
+                padding: 1.5rem;
+            }
+            
+            .hashtags-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.8rem;
+            }
+            
+            .hashtag-item {
+                padding: 1rem;
+            }
+            
+            .hashtag-name {
+                font-size: 1rem;
+            }
+            
+            .hashtag-desc {
+                font-size: 0.75rem;
+            }
+            
+            .submit-btn {
+                padding: 1rem 3rem;
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hashtags-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <img src="images/logo.png" alt="Framee Logo" class="logo-img">
+            <span class="logo-text"><span class="serif">Fra</span><span class="sans">mee</span></span>
+        </a>
+        <a href="index.html" class="back-btn">← 홈으로</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="header">
+            <div class="mgram-title">mgram</div>
+            <p class="subtitle">
+                60가지 해시태그 중에서<br>
+                당신을 가장 잘 표현하는 <strong>8개</strong>를 선택해주세요
+            </p>
+        </div>
+
+        <div class="instruction">
+            <div class="counter">
+                <span id="selected-count">0</span> / 8
+            </div>
+            <div class="counter-text">선택됨</div>
+        </div>
+
+        <div class="hashtags-grid" id="hashtags-container">
+            <!-- JavaScript로 생성됨 -->
+        </div>
+
+        <div class="submit-section">
+            <button class="submit-btn" id="submit-btn" disabled>
+                결과 보기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const hashtags = [
+            { name: "분석적", desc: "논리적으로 사고하는" },
+            { name: "창의적", desc: "새로운 아이디어를 만드는" },
+            { name: "공감적", desc: "타인의 감정을 이해하는" },
+            { name: "독립적", desc: "혼자서도 잘하는" },
+            { name: "열정적", desc: "뜨겁게 몰입하는" },
+            { name: "신중한", desc: "꼼꼼히 살피는" },
+            { name: "사교적", desc: "사람들과 어울리는" },
+            { name: "진취적", desc: "앞으로 나아가는" },
+            { name: "차분한", desc: "침착하게 대응하는" },
+            { name: "유쾌한", desc: "즐겁게 만드는" },
+            { name: "성실한", desc: "책임감 있게 완수하는" },
+            { name: "모험적", desc: "새로운 것을 시도하는" },
+            { name: "배려심 깊은", desc: "타인을 먼저 생각하는" },
+            { name: "완벽주의적", desc: "디테일을 놓치지 않는" },
+            { name: "낙천적", desc: "긍정적으로 보는" },
+            { name: "리더십 있는", desc: "이끌어가는" },
+            { name: "유연한", desc: "상황에 맞춰 변화하는" },
+            { name: "직관적", desc: "감각으로 판단하는" },
+            { name: "계획적", desc: "미리 준비하는" },
+            { name: "솔직한", desc: "있는 그대로 말하는" },
+            { name: "호기심 많은", desc: "궁금한 게 많은" },
+            { name: "끈기 있는", desc: "포기하지 않는" },
+            { name: "섬세한", desc: "미묘한 차이를 아는" },
+            { name: "자신감 있는", desc: "당당한" },
+            { name: "겸손한", desc: "낮은 자세의" },
+            { name: "감성적", desc: "느낌을 중요하게 여기는" },
+            { name: "이성적", desc: "합리적으로 판단하는" },
+            { name: "자유로운", desc: "틀에 얽매이지 않는" },
+            { name: "안정적", desc: "변하지 않는" },
+            { name: "효율적", desc: "빠르게 처리하는" },
+            { name: "집중력 강한", desc: "깊이 파고드는" },
+            { name: "협동적", desc: "함께 만들어가는" },
+            { name: "경쟁적", desc: "이기려고 노력하는" },
+            { name: "여유로운", desc: "느긋하게 즐기는" },
+            { name: "적극적", desc: "먼저 다가가는" },
+            { name: "신뢰할 수 있는", desc: "믿음을 주는" },
+            { name: "개방적", desc: "열린 마음의" },
+            { name: "조용한", desc: "말이 적은" },
+            { name: "표현력 좋은", desc: "말과 글로 잘 나타내는" },
+            { name: "실용적", desc: "현실적으로 생각하는" },
+            { name: "이상주의적", desc: "더 나은 세상을 꿈꾸는" },
+            { name: "관찰력 좋은", desc: "잘 보고 알아채는" },
+            { name: "결단력 있는", desc: "빠르게 결정하는" },
+            { name: "신중한", desc: "천천히 판단하는" },
+            { name: "유머러스한", desc: "웃음을 주는" },
+            { name: "진지한", desc: "깊이 생각하는" },
+            { name: "순수한", desc: "티 없이 맑은" },
+            { name: "노련한", desc: "경험이 풍부한" },
+            { name: "도전적", desc: "어려움에 맞서는" },
+            { name: "평화로운", desc: "갈등을 피하는" },
+            { name: "적응력 좋은", desc: "새 환경에 잘 적응하는" },
+            { name: "원칙적", desc: "규칙을 지키는" },
+            { name: "즉흥적", desc: "그때그때 결정하는" },
+            { name: "체계적", desc: "순서대로 정리하는" },
+            { name: "감각적", desc: "오감이 예민한" },
+            { name: "논리적", desc: "인과관계를 따지는" },
+            { name: "낭만적", desc: "분위기를 즐기는" },
+            { name: "현실적", desc: "발을 땅에 붙인" },
+            { name: "용기 있는", desc: "두려움을 극복하는" },
+            { name: "신중한", desc: "위험을 피하는" }
+        ];
+
+        const container = document.getElementById('hashtags-container');
+        const countElement = document.getElementById('selected-count');
+        const submitBtn = document.getElementById('submit-btn');
+        let selectedTags = [];
+
+        // 해시태그 렌더링
+        hashtags.forEach((tag, index) => {
+            const div = document.createElement('div');
+            div.className = 'hashtag-item';
+            div.dataset.index = index;
+            div.innerHTML = `
+                <div class="hashtag-name">#${tag.name}</div>
+                <div class="hashtag-desc">${tag.desc}</div>
+            `;
+            
+            div.addEventListener('click', () => toggleSelection(div, index));
+            container.appendChild(div);
+        });
+
+        // 선택 토글
+        function toggleSelection(element, index) {
+            if (element.classList.contains('disabled')) return;
+
+            if (element.classList.contains('selected')) {
+                // 선택 취소
+                element.classList.remove('selected');
+                selectedTags = selectedTags.filter(i => i !== index);
+            } else {
+                // 선택
+                if (selectedTags.length < 8) {
+                    element.classList.add('selected');
+                    selectedTags.push(index);
+                }
+            }
+
+            updateUI();
+        }
+
+        // UI 업데이트
+        function updateUI() {
+            countElement.textContent = selectedTags.length;
+
+            // 8개 선택 시 나머지 비활성화
+            const allItems = document.querySelectorAll('.hashtag-item');
+            if (selectedTags.length === 8) {
+                allItems.forEach(item => {
+                    if (!item.classList.contains('selected')) {
+                        item.classList.add('disabled');
+                    }
+                });
+                submitBtn.classList.add('active');
+                submitBtn.disabled = false;
+            } else {
+                allItems.forEach(item => {
+                    item.classList.remove('disabled');
+                });
+                submitBtn.classList.remove('active');
+                submitBtn.disabled = true;
+            }
+        }
+
+        // 결과 페이지로 이동
+        submitBtn.addEventListener('click', () => {
+            if (selectedTags.length === 8) {
+                const selectedNames = selectedTags.map(i => hashtags[i].name).join(',');
+                window.location.href = `result.html?tags=${encodeURIComponent(selectedNames)}`;
+            }
+        });
+    </script>
+</body>
+</html>

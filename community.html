@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커뮤니티 - Framee</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --cyan: #00ffff;
+            --pink: #ff6cdc;
+            --bg-cream: #f5f1e8;
+            --text-dark: #2a2a2a;
+            --text-gray: #666666;
+            --border-light: #e0ddd5;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(245, 241, 232, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        .logo-text .serif {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 700;
+        }
+        
+        .logo-text .sans {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 500;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--cyan);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-dark);
+        }
+        
+        /* Header */
+        .header {
+            padding: 120px 5% 50px;
+            text-align: center;
+        }
+        
+        .page-title {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 900;
+            color: var(--pink);
+            margin-bottom: 1rem;
+        }
+        
+        .page-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: var(--text-gray);
+        }
+        
+        /* Filter Tabs */
+        .filter-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5% 3rem;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 0.8rem 2rem;
+            background: #f9f5ed;
+            border: 2px solid var(--border-light);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        .filter-tab:hover {
+            border-color: var(--pink);
+        }
+        
+        .filter-tab.active {
+            background: var(--pink);
+            border-color: var(--pink);
+            color: white;
+        }
+        
+        /* Stories Grid */
+        .stories-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5% 100px;
+        }
+        
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* Story Card */
+        .story-card {
+            background: #f9f5ed;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid var(--border-light);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .story-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .story-image {
+            width: 100%;
+            height: 250px;
+            background: #e8e4da;
+            border-bottom: 2px solid var(--border-light);
+            overflow: hidden;
+        }
+        
+        .story-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .story-content {
+            padding: 2rem;
+        }
+        
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .story-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .story-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .story-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .story-username {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.2rem;
+        }
+        
+        .story-date {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+        
+        .story-category {
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 108, 220, 0.1);
+            border: 1px solid var(--pink);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--pink);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .story-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+        
+        .story-excerpt {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .story-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .story-tag {
+            padding: 0.4rem 0.8rem;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+        }
+        
+        .story-stats {
+            display: flex;
+            gap: 1.5rem;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .story-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 3rem;
+            background: #f9f5ed;
+            margin: 0 5% 3rem;
+            border-radius: 30px;
+            border: 2px solid var(--border-light);
+        }
+        
+        .cta-title {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-text {
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+        }
+        
+        .cta-btn {
+            padding: 1.2rem 3rem;
+            background: transparent;
+            border: 2px solid var(--cyan);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .cta-btn:hover {
+            background: var(--cyan);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 5%;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .logo-img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(245, 241, 232, 0.98);
+                flex-direction: column;
+                padding: 2rem 5%;
+                gap: 1.5rem;
+                border-bottom: 1px solid var(--border-light);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .header {
+                padding: 100px 5% 40px;
+            }
+            
+            .filter-tabs {
+                gap: 0.8rem;
+            }
+            
+            .filter-tab {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .stories-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .story-image {
+                height: 200px;
+            }
+            
+            .story-content {
+                padding: 1.5rem;
+            }
+            
+            .cta-section {
+                padding: 2rem;
+                margin: 0 5% 2rem;
+            }
+            
+            .cta-btn {
+                padding: 1rem 2.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo">
+            <img src="images/logo.png" alt="Framee Logo" class="logo-img">
+            <span class="logo-text"><span class="serif">Fra</span><span class="sans">mee</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">홈</a>
+            <a href="mgram.html">mgram</a>
+            <a href="diary.html">나의 기록</a>
+            <a href="journey.html">여정</a>
+            <a href="community.html">커뮤니티</a>
+        </div>
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="header">
+        <h1 class="page-title">커뮤니티</h1>
+        <p class="page-subtitle">함께 나누는 변화의 이야기</p>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="filter-tabs">
+            <div class="filter-tab active">전체</div>
+            <div class="filter-tab">변화 스토리</div>
+            <div class="filter-tab">상담 후기</div>
+            <div class="filter-tab">스타일링 후기</div>
+            <div class="filter-tab">일상 공유</div>
+        </div>
+    </div>
+
+    <!-- Stories Grid -->
+    <div class="stories-container">
+        <div class="stories-grid">
+            
+            <!-- Story Card 1 -->
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="images/community1.jpg" alt="변화 스토리">
+                </div>
+                <div class="story-content">
+                    <div class="story-header">
+                        <div class="story-avatar">
+                            <img src="images/avatar1.jpg" alt="봄날의햇살">
+                        </div>
+                        <div class="story-user-info">
+                            <div class="story-username">봄날의햇살</div>
+                            <div class="story-date">2024.12.05</div>
+                        </div>
+                        <div class="story-category">변화 스토리</div>
+                    </div>
+                    <h3 class="story-title">3개월 만에 찾은 나다운 모습</h3>
+                    <p class="story-excerpt">
+                        처음에는 반신반의했어요. 하지만 mgram 테스트부터 시작해서 
+                        상담과 스타일링을 받으면서 조금씩 변해가는 제 모습을 발견했습니다...
+                    </p>
+                    <div class="story-tags">
+                        <span class="story-tag">#자존감회복</span>
+                        <span class="story-tag">#스타일링</span>
+                        <span class="story-tag">#심리상담</span>
+                    </div>
+                    <div class="story-stats">
+                        <div class="story-stat">❤️ 124</div>
+                        <div class="story-stat">💬 18</div>
+                        <div class="story-stat">👁️ 892</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Card 2 -->
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="images/community2.jpg" alt="상담 후기">
+                </div>
+                <div class="story-content">
+                    <div class="story-header">
+                        <div class="story-avatar">
+                            <img src="images/avatar2.jpg" alt="민지">
+                        </div>
+                        <div class="story-user-info">
+                            <div class="story-username">민지</div>
+                            <div class="story-date">2024.12.03</div>
+                        </div>
+                        <div class="story-category">상담 후기</div>
+                    </div>
+                    <h3 class="story-title">처음으로 내 마음을 들여다봤어요</h3>
+                    <p class="story-excerpt">
+                        상담을 받기 전까지는 제 감정을 제대로 표현해본 적이 없었던 것 같아요. 
+                        전문가 선생님과의 대화를 통해 억눌렀던 감정들을 꺼낼 수 있었습니다...
+                    </p>
+                    <div class="story-tags">
+                        <span class="story-tag">#심리상담</span>
+                        <span class="story-tag">#감정표현</span>
+                    </div>
+                    <div class="story-stats">
+                        <div class="story-stat">❤️ 89</div>
+                        <div class="story-stat">💬 12</div>
+                        <div class="story-stat">👁️ 567</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Card 3 -->
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="images/community3.jpg" alt="스타일링 후기">
+                </div>
+                <div class="story-content">
+                    <div class="story-header">
+                        <div class="story-avatar">
+                            <img src="images/avatar3.jpg" alt="지우">
+                        </div>
+                        <div class="story-user-info">
+                            <div class="story-username">지우</div>
+                            <div class="story-date">2024.12.01</div>
+                        </div>
+                        <div class="story-category">스타일링 후기</div>
+                    </div>
+                    <h3 class="story-title">퍼스널 컬러 진단 받고 인생이 바뀜</h3>
+                    <p class="story-excerpt">
+                        제가 웜톤인 줄 알았는데 알고 보니 쿨톤이더라고요! 
+                        어울리는 색을 알게 된 후로 옷 입는 게 너무 즐거워졌어요. 
+                        거울 보는 게 좋아졌어요...
+                    </p>
+                    <div class="story-tags">
+                        <span class="story-tag">#퍼스널컬러</span>
+                        <span class="story-tag">#스타일링</span>
+                        <span class="story-tag">#자신감</span>
+                    </div>
+                    <div class="story-stats">
+                        <div class="story-stat">❤️ 156</div>
+                        <div class="story-stat">💬 24</div>
+                        <div class="story-stat">👁️ 1024</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Card 4 -->
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="images/community4.jpg" alt="일상 공유">
+                </div>
+                <div class="story-content">
+                    <div class="story-header">
+                        <div class="story-avatar">
+                            <img src="images/avatar4.jpg" alt="은서">
+                        </div>
+                        <div class="story-user-info">
+                            <div class="story-username">은서</div>
+                            <div class="story-date">2024.11.28</div>
+                        </div>
+                        <div class="story-category">일상 공유</div>
+                    </div>
+                    <h3 class="story-title">오늘 처음으로 거울 보고 웃었어요</h3>
+                    <p class="story-excerpt">
+                        아침에 일어나서 거울을 봤는데 예전처럼 한숨이 나오지 않았어요. 
+                        "오늘도 괜찮네?" 하면서 미소 지었어요. 작은 변화지만 제게는 큰 의미입니다...
+                    </p>
+                    <div class="story-tags">
+                        <span class="story-tag">#일상</span>
+                        <span class="story-tag">#긍정</span>
+                    </div>
+                    <div class="story-stats">
+                        <div class="story-stat">❤️ 203</div>
+                        <div class="story-stat">💬 31</div>
+                        <div class="story-stat">👁️ 1456</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Card 5 -->
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="images/community5.jpg" alt="변화 스토리">
+                </div>
+                <div class="story-content">
+                    <div class="story-header">
+                        <div class="story-avatar">
+                            <img src="images/avatar5.jpg" alt="수아">
+                        </div>
+                        <div class="story-user-info">
+                            <div class="story-username">수아</div>
+                            <div class="story-date">2024.11.25</div>
+                        </div>
+                        <div class="story-category">변화 스토리</div>
+                    </div>
+                    <h3 class="story-title">Before & After: 6개월의 기록</h3>
+                    <p class="story-excerpt">
+                        반년 전 처음 Framee를 시작했을 때와 지금을 비교해보면 
+                        정말 많이 달라졌어요. 외모도 달라졌지만 무엇보다 
+                        마음가짐이 완전히 바뀌었습니다...
+                    </p>
+                    <div class="story-tags">
+                        <span class="story-tag">#6개월</span>
+                        <span class="story-tag">#변화</span>
+                        <span class="story-tag">#성장</span>
+                    </div>
+                    <div class="story-stats">
+                        <div class="story-stat">❤️ 287</div>
+                        <div class="story-stat">💬 42</div>
+                        <div class="story-stat">👁️ 2134</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Story Card 6 -->
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="images/community6.jpg" alt="상담 후기">
+                </div>
+                <div class="story-content">
+                    <div class="story-header">
+                        <div class="story-avatar">
+                            <img src="images/avatar6.jpg" alt="예린">
+                        </div>
+                        <div class="story-user-info">
+                            <div class="story-username">예린</div>
+                            <div class="story-date">2024.11.22</div>
+                        </div>
+                        <div class="story-category">상담 후기</div>
+                    </div>
+                    <h3 class="story-title">나를 사랑하는 법을 배웠어요</h3>
+                    <p class="story-excerpt">
+                        "너는 충분히 괜찮은 사람이야"라는 말을 처음으로 믿게 되었어요. 
+                        상담 선생님께서 제 이야기를 진심으로 들어주시고 
+                        공감해주셨던 게 큰 힘이 되었습니다...
+                    </p>
+                    <div class="story-tags">
+                        <span class="story-tag">#자기애</span>
+                        <span class="story-tag">#치유</span>
+                    </div>
+                    <div class="story-stats">
+                        <div class="story-stat">❤️ 178</div>
+                        <div class="story-stat">💬 27</div>
+                        <div class="story-stat">👁️ 945</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2 class="cta-title">당신의 이야기를 들려주세요</h2>
+        <p class="cta-text">Framee와 함께한 변화의 순간을 나눠보세요</p>
+        <a href="index.html#service" class="cta-btn">나의 여정 시작하기</a>
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
